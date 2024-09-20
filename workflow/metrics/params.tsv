@@ -11,6 +11,7 @@ isolated_label_asw	bio_conservation	full,embed	embed	False	False	scib_accel	cpu	
 isolated_label_f1	bio_conservation	full,embed,knn	knn	False	True	scib	cpu	1
 nmi	bio_conservation	full,embed,knn	knn	False	True	scib_accel	cpu	1
 kbet	batch_correction	full,embed,knn	knn	False	False	scib	cpu	1
+morans_i	bio_conservation	full,embed,knn	knn	True	False	scib	cpu	10
 ari_leiden_y	bio_conservation	full,embed,knn	knn	False	False	scib_metrics	gpu	1
 ari_kmeans_y	bio_conservation	full,embed,knn	knn	False	False	scib_metrics	gpu	1
 nmi_leiden_y	bio_conservation	full,embed,knn	knn	False	False	scib_metrics	gpu	1
