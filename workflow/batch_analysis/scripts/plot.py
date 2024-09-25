@@ -36,25 +36,40 @@ g = sns.barplot(
     hue='permuted',
     errorbar='sd',
     dodge=True,
-    errwidth=1,
+    err_kws={'linewidth': 1},
     capsize=.1,
 )
-g.set(title=f'PCR of covariates for: {dataset} {file_id}')
-grouped_by_covariate = df.groupby('covariate', sort=False)
-bar_labels = grouped_by_covariate['pcr'].first().round(2).astype(str).str.cat(
-    grouped_by_covariate['n_covariates'].first(),
-    sep=', '
-)
-g.bar_label(
-    g.containers[0],
-    labels=bar_labels,
-    padding=10
-)
+g.set(title=f'Principal Component Regression scores of covariates for: {dataset} {file_id}')
+
+def round_values(x, prefix='', n_digits=3):
+    if x < 10 ** (-n_digits):
+        f'{prefix}{x:.2e}'
+    elif pd.notna(x):
+        return f'{prefix}{x:.{n_digits}f}'
+    return ''
+
+df['pcr_string'] = df['pcr'].apply(round_values)
+df['n_covariates'] = df['n_covariates'].apply(lambda x: f'n={x}')
+df['signif'] = df['z_score'].apply(lambda x: '**' if x > 3 else '*' if x > 1.5 else '')
+df['z_score'] = df['z_score'].apply(round_values, prefix='z=', n_digits=2)
+
+# create bar labels for covariate
+covariate_bar_labels = df.groupby('covariate', sort=False).first()[
+    ['pcr_string', 'z_score', 'n_covariates', 'signif']
+].astype(str).agg(lambda x: ', '.join([s for s in x if s]), axis=1)
+print(covariate_bar_labels)
+g.bar_label(g.containers[0], labels=covariate_bar_labels, padding=10)
+
+# create bar labels for permuted covariates
+if len(g.containers) > 1:
+    perm_bar_labels = df.groupby('covariate', sort=False).first()['perm_std'].apply(round_values, prefix='std=')
+    g.bar_label(g.containers[1], labels=perm_bar_labels, padding=25)
+
 plt.xticks(rotation=90)
 sns.despine()
 
 logger.info('Save barplot...')
-plt.savefig(output_bar, bbox_inches='tight',dpi=300)
+plt.savefig(output_bar, bbox_inches='tight', dpi=300)
 
 logging.info('Violin plot...')
 plt.clf()

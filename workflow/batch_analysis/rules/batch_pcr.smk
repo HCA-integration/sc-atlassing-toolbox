@@ -7,7 +7,7 @@ checkpoint determine_covariates:
         covariates=lambda wildcards: mcfg.get_from_parameters(wildcards, 'covariates', default=[]),
         permute_covariates=lambda wildcards: mcfg.get_from_parameters(wildcards, 'permute_covariates', default=None),
         sample_key=lambda wildcards: mcfg.get_from_parameters(wildcards, 'sample', check_query_keys=False),
-        # n_permute=lambda wildcards: mcfg.get_from_parameters(wildcards, 'n_permutations', default=10),
+        n_permute=lambda wildcards: mcfg.get_from_parameters(wildcards, 'n_permutations', default=10),
     conda:
         get_env(config, 'scanpy')
     script:
@@ -37,12 +37,12 @@ rule batch_pcr:
     output:
         tsv=mcfg.out_dir / paramspace.wildcard_pattern / 'batch_pcr' / '{covariate}.tsv',
     params:
-        n_permute=lambda wildcards: mcfg.get_from_parameters(wildcards, 'n_permutations', default=10, check_query_keys=False),
+        n_permute=lambda wildcards: mcfg.get_from_parameters(wildcards, 'n_permutations', check_query_keys=False),
         sample_key=lambda wildcards: mcfg.get_from_parameters(wildcards, 'sample', check_query_keys=False),
     conda:
         get_env(config, 'scib')
     threads:
-        lambda wildcards: max(1, min(10, mcfg.get_from_parameters(wildcards, 'n_permutations', default=10, check_query_keys=False)))
+        lambda wildcards: max(1, min(10, mcfg.get_from_parameters(wildcards, 'n_permutations', check_query_keys=False)))
     resources:
         partition=mcfg.get_resource(profile='cpu',resource_key='partition'),
         qos=mcfg.get_resource(profile='cpu',resource_key='qos'),
@@ -59,7 +59,7 @@ rule collect:
     run:
         dfs = [pd.read_table(file) for file in input.tsv]
         if len(dfs) == 0:
-            df = pd.DataFrame(columns=['covariate', 'pcr', 'permuted', 'n_covariates'])
+            df = pd.DataFrame(columns=['covariate', 'pcr', 'permuted', 'n_covariates', 'non_perm_z_score'])
         else:
             df = pd.concat(dfs, ignore_index=True)
         df.to_csv(output.tsv, sep='\t', index=False)

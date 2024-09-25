@@ -15,7 +15,7 @@ covariates = snakemake.params.get('covariates', [])
 perm_covariates = snakemake.params.get('permute_covariates')
 if perm_covariates is None:
     perm_covariates = covariates
-n_perms = snakemake.params.get('n_perms')
+n_perms = snakemake.params.get('n_permute')
 
 logging.info(f'Read {input_file}...')
 if input_file.endswith('.h5ad'):

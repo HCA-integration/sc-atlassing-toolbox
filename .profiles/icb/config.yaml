@@ -10,11 +10,11 @@ cluster:
     --output=logs/%j-{rule}.out
     --parsable
 default-resources:
-  - partition=cpu_p
-  - qos=cpu_normal
-  - gpu=0
-  - mem_mb=90000
-  - disk_mb=20000
+  - partition=gpu_p
+  - qos=gpu_normal
+  - gpu=1
+  - mem_mb=240000
+#  - disk_mb=20000
 restart-times: 0
 max-jobs-per-second: 10
 max-status-checks-per-second: 1
