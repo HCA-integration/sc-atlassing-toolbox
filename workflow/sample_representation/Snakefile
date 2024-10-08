@@ -5,15 +5,40 @@ from pathlib import Path
 import pandas as pd
 
 from utils.environments import get_env
-from utils.ModuleConfig import ModuleConfig
+from SampleRepresentationConfig import SampleRepresentationConfig
 
-mcfg = ModuleConfig(
+mcfg = SampleRepresentationConfig(
     module_name='sample_representation',
     config=config,
-    config_params=['covariates', 'sample'],
+    parameters=workflow.source_path('params.tsv'),
+    config_params=[
+        'methods',
+        'sample_key',
+        'cell_type_key',
+        'use_rep',
+        'var_mask',
+        'norm_counts',
+        'raw_counts',
+        'aggregate',
+        'min_cells_per_sample',
+        'min_cells_per_cell_type',
+    ],
+    wildcard_names=['method', 'input_type', 'use_rep', 'var_mask'],
+    rename_config_params={'methods': 'method'},
+    explode_by=['method', 'use_rep', 'var_mask'],
 )
-
 paramspace = mcfg.get_paramspace()
+
+include: "rules/prepare.smk"
+include: "rules/methods.smk"
+
+
+rule all:
+    input:
+        mcfg.get_output_files(rules.prepare.output),
+        mcfg.get_output_files(rules.run_method.output),
+    default_target: True
+    localrule: True
 
 
 module common:
@@ -21,58 +46,6 @@ module common:
     config: config
 
 use rule * from common as common_ *
-
-
-rule pseudobulk:
-    input:
-        zarr=lambda wildcards: mcfg.get_input_file(**wildcards)
-    output:
-        zarr=directory(mcfg.out_dir / paramspace.wildcard_pattern / 'pseudobulk.zarr'),
-    params:
-        bulk_by=lambda wildcards: mcfg.get_from_parameters(wildcards, 'sample')
-    conda:
-        get_env(config, 'scanpy')
-    resources:
-        mem_mb=lambda w, attempt: mcfg.get_resource(profile='cpu',resource_key='mem_mb', attempt=attempt)
-    script:
-        'scripts/pseudobulk.py'
-
-# pca_1_2=mcfg.image_dir / paramspace.wildcard_pattern / 'pc_1_2.png',
-# pca_2_3=mcfg.image_dir / paramspace.wildcard_pattern / 'pca_2_3.png',
-# pca_scree=mcfg.image_dir / paramspace.wildcard_pattern / 'pca_screeplot.png',
-
-
-# use rule pseudobulk as pseudobulk_organ with:
-#     input:
-#         zarr=rules.load_data_merge_organ.output.zarr
-#     params:
-#         dataset=lambda wildcards: wildcards.organ,
-#         bulk_by='sample',
-#         color=[
-#             'dataset',
-#             'study',
-#             'reference',
-#             'sex',
-#             'disease',
-#             'assay',
-#             'modalities',
-#             'pipeline_version',
-#             'institution',
-#             'self_reported_ethnicity',
-#             'development_stage'
-#         ],
-#     output:
-#         pca_1_2=images_dir / 'organ' / '{organ}_1_2.png',
-#         pca_2_3=images_dir / 'organ' / '{organ}_2_3.png',
-#         pca_scree=images_dir / 'organ' / '{organ}_scree.png',
-#     resources:
-#         mem_mb=get_resource(config,profile='cpu_merged',resource_key='mem_mb')
-
-rule all:
-    input:
-        mcfg.get_output_files(rules.pseudobulk.output),
-    default_target: True
-    localrule: True
 
 
 rule dependency_graph:

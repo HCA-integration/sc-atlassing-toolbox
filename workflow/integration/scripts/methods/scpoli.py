@@ -107,6 +107,7 @@ model.save(output_model, overwrite=True)
 
 # prepare output adata
 adata.obsm["X_emb"] = model.get_latent(adata, mean=True)
+adata.uns[f"scpoli_{batch_key}_embeddings"] = model.get_conditional_embeddings().X
 adata = remove_slots(adata=adata, output_type=params['output_type'], keep_X=True)
 add_metadata(
     adata,

@@ -8,6 +8,8 @@ warnings.simplefilter("ignore", UserWarning)
 import logging
 logging.basicConfig(level=logging.INFO)
 
+import patient_representation as pr
+
 from utils.io import read_anndata
 from utils.processing import get_pseudobulks
 
@@ -15,15 +17,19 @@ from utils.processing import get_pseudobulks
 sc.set_figure_params(dpi=100, frameon=False)
 input_zarr = snakemake.input.zarr
 output_zarr = snakemake.output.zarr
-bulk_by = snakemake.params.get('bulk_by')
-dataset = snakemake.wildcards.file_id
+sample_key = snakemake.params.get('sample_key')
+cell_type_key = snakemake.params.get('cell_type_key')
+aggregate = snakemake.params.get('aggregate')
+layer = snakemake.params.get('norm_counts')
+min_cells_per_sample = snakemake.params.get('min_cells_per_sample')
+min_cells_per_cell_type = snakemake.params.get('min_cells_per_cell_type')
 
 logging.info(f'Read "{input_zarr}"...')
 n_obs = read_anndata(input_zarr, obs='obs').n_obs
 dask = n_obs > 2e6
 adata = read_anndata(
     input_zarr,
-    X='X',
+    X=layer,
     obs='obs',
     var='var',
     backed=dask,
@@ -31,14 +37,25 @@ adata = read_anndata(
     stride=int(n_obs / 5),
 )
 
-# normalize counts
-# sc.pp.normalize_total(adata)
+# # filter small samples and cell types
+# adata = pr.pp.filter_small_samples(
+#     adata,
+#     sample_key,
+#     sample_size_threshold=min_cells_per_sample,
+# )
+# if cell_type_key is not None:
+#     adata = pr.pp.filter_small_cell_types(
+#         adata,
+#         sample_key,
+#         cell_type_key,
+#         cluster_size_threshold=min_cells_per_cell_type,
+#     )
 
-logging.info(f'Pseudobulk by "{bulk_by}"...')
-adata_bulk = get_pseudobulks(adata, group_key=bulk_by, agg='sum')
-logging.info(adata_bulk.__str__())
+logging.info(f'Pseudobulk by "{sample_key}"...')
+adata_bulk = get_pseudobulks(adata, group_key=sample_key, agg=aggregate)
 
 logging.info(f'Write "{output_zarr}"...')
+logging.info(adata_bulk.__str__())
 adata_bulk.write_zarr(output_zarr)
 
 # # process pseudobulk adata

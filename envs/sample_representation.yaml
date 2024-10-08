@@ -1,0 +1,17 @@
+name: sample_representation
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - python=3.11.9
+  - anndata=0.10
+  - scanpy=1.10
+  - hdf5=1.14.2
+  - leidenalg
+  - dask
+  - dask-ml
+  - sparse
+  - zarr
+  - pip
+  - pip:
+    - git+https://github.com/lueckenlab/patient_representation.git@main

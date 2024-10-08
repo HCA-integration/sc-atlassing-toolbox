@@ -1,0 +1,38 @@
+name: scitd
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - r-base=4.3
+  - r-biocmanager
+  - r-data.table
+  - r-reticulate
+  - r-anndata
+  - python=3.10
+  - anndata>=0.10.0
+  - scanpy >=1.10.0
+  - hdf5=1.14.2
+  - dask
+  - dask-ml
+  - sparse
+  - zarr
+  - r-rtensor
+  - r-ica
+  - bioconductor-fgsea
+  - r-circlize
+  - r-reshape2
+  - r-parallelly
+  - bioconductor-complexheatmap
+  - r-ggplot2
+  - r-mgcv
+  - r-r.utils
+  - r-rcpp
+  - r-rcolorbrewer
+  - r-dplyr
+  - bioconductor-edger
+  - bioconductor-sva
+  - r-rmisc
+  - r-ggpubr
+  - r-msigdbr
+  - r-sccore
+  - r-nmf

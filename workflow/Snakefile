@@ -6,6 +6,7 @@ from snakemake.utils import min_version
 from utils.pipeline import update_module_configs, config_for_module, update_input_files_per_dataset, update_file_for_module_param
 from utils.ModuleConfig import ModuleConfig
 from integration.IntegrationConfig import IntegrationConfig
+from sample_representation.SampleRepresentationConfig import SampleRepresentationConfig
 
 
 min_version("6.0")
@@ -24,7 +25,11 @@ config_kwargs = {
         config_params=['covariates', 'permute_covariates', 'n_permutations', 'sample'],
     ),
     'sample_representation': dict(
-        config_params=['covariates', 'sample'],
+        parameters=workflow.source_path('sample_representation/params.tsv'),
+        config_params=['methods', 'use_rep', 'var_mask', 'sample_key', 'norm_counts', 'raw_counts'],
+        wildcard_names=['method', 'input_type', 'use_rep', 'var_mask'],
+        rename_config_params={'methods': 'method'},
+        explode_by=['method', 'use_rep', 'var_mask'],
     ),
     'split_data': dict(
         config_params=['key', 'values'],
@@ -66,6 +71,7 @@ config_kwargs = {
 
 config_classes = {
     'integration': IntegrationConfig,
+    'sample_representation': SampleRepresentationConfig,
 }
 
 config['DATASETS'] = config.get('DATASETS', {})

@@ -222,14 +222,24 @@ def get_pseudobulks(adata, group_key, agg='sum', dtype='float32'):
             #     pseudobulks.append(row_agg)
             # pseudobulks = np.stack(pseudobulks, axis=0)
         else:
-            raise ValueError(f'invalid type "{type(x)}"')
+            raise ValueError(f'invalid type "{type(X)}"')
         
         return pseudobulks, groups
 
-
     pbulks, groups = _get_pseudobulk_matrix(adata, group_key=group_key, agg=agg)
 
-    print(f'Merge metadata...', flush=True)
+    return ad.AnnData(
+        pbulks,
+        obs=aggregate_obs(adata, group_key, groups),
+        var=adata.var,
+        dtype='float32'
+    )
+
+
+def aggregate_obs(adata: ad.AnnData, group_key: str, groups: list):
+
+    print(f'Aggregate metadata by {group_key}...', flush=True)
+
     obs = pd.DataFrame(groups, columns=[group_key]).merge(
         adata.obs.drop_duplicates(subset=[group_key]),
         on=group_key,
@@ -237,13 +247,9 @@ def get_pseudobulks(adata, group_key, agg='sum', dtype='float32'):
     )
     obs.index = obs[group_key].values
 
+    # convert category columns to string
     for col in obs.columns:
         if obs[col].dtype.name == 'category':
             obs[col] = obs[col].astype(str).astype('category')
 
-    return ad.AnnData(
-        pbulks,
-        obs=obs,
-        var=adata.var,
-        dtype='float32'
-    )
+    return obs

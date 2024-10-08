@@ -1,0 +1,9 @@
+method	input_type	env	script_suffix	do_not_expand	resources	threads
+pseudobulk	embed	sample_representation	py	true	cpu	1
+composition	embed	sample_representation	py	true	cpu	1
+cell_type_pseudobulk	embed	sample_representation	py	true	cpu	1
+pilot	embed	pilot	py	true	cpu	1
+scpoli	full	sample_representation	py	true	gpu	1
+mrvi	full	scvi-tools	py	true	gpu	1
+gloscope	embed	gloscope	R	true	cpu	10
+scitd	full	scitd	R	true	cpu	10
