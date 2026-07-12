@@ -36,6 +36,7 @@ paramspace = mcfg.get_paramspace()
 
 wildcard_constraints:
     dataset='\w+',
+    file_id='\w+',
 
 
 module common:

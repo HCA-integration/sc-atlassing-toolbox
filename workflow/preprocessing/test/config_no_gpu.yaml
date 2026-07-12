@@ -10,7 +10,7 @@ DATASETS:
     input:
       preprocessing:
         h5ad: test/input/pbmc68k.h5ad
-        zarr: test/out/preprocessing/dataset~no_gpu/file_id~h5ad/normalized.zarr
+        zarr: test/out/preprocessing/preprocessed/dataset~no_gpu/file_id~h5ad/normalized.zarr
     preprocessing:
       raw_counts: layers/counts
       highly_variable_genes:
@@ -37,7 +37,7 @@ DATASETS:
     input:
       preprocessing:
         h5ad: test/input/pbmc68k.h5ad
-        zarr: test/out/preprocessing/dataset~extra_hvgs/file_id~h5ad/normalized.zarr
+        zarr: test/out/preprocessing/preprocessed/dataset~extra_hvgs/file_id~h5ad/normalized.zarr
     preprocessing:
       scale: true
       extra_hvgs:
