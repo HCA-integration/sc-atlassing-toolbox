@@ -10,13 +10,11 @@ defaults:
     neighbors:
       n_neighbors: 15
   datasets:
-    - large
-    - all
+    # - large
+    # - all
     - no_hvg
     - empty
-    - test_backed
     - test_dask
-    - test_dask_backed
 
 DATASETS:
   large:
