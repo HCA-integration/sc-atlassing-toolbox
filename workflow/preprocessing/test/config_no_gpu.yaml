@@ -14,7 +14,9 @@ DATASETS:
     preprocessing:
       raw_counts: layers/counts
       highly_variable_genes:
-        n_top_genes: 100
+        n_top_genes:
+          - 100
+          - 200
       pca:
         dask: true
       assemble:

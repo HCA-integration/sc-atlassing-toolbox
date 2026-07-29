@@ -82,7 +82,9 @@ DATASETS:
           - seurat
           - seurat_v3
           - cell_ranger
-        n_top_genes: 100
+        n_top_genes: 
+          - 100
+          - 200
       assemble:
         - counts
         - normalize
