@@ -157,7 +157,17 @@ If you found a bug, please use the [issue tracker][].
 
 ## Citation
 
-> t.b.a
+```bibtex
+@article {Mueller2026.07.30.741695,
+	author = {Mueller, Michaela F. and Cujba, Ana-Maria and Romanovskaia, Daria and Cohen, Carla J. and Bright, Chelsea A. and Lance, Christopher and Ram{\'\i}rez-Su{\'a}stegui, Ciro and Strobl, Daniel C. and Yuan, Hao and Hulsen, Janneke and Naas, Julia and Limbeck, Katharina and Kock, Kian Hong and Halle, Lennard and Knoll, Rainer and Kfuri-Rubens, Raphael and Aguilar-Fern{\'a}ndez, Sergio and Parikh, Shrey and Shitov, Vladimir A. and Said, Wamia and Kasper, Maria and Snelling, Sarah J. B. and Teichmann, Sarah A. and Reynolds, Gary and Prabhakar, Shyam and Villani, Alexandra-Chloe and Theis, Fabian J. and Luecken, Malte D.},
+	title = {Building optimized single-cell reference atlases with scAtlasTb},
+	year = {2026},
+	doi = {10.64898/2026.07.30.741695},
+	publisher = {Cold Spring Harbor Laboratory},
+	URL = {https://www.biorxiv.org/content/early/2026/08/02/2026.07.30.741695},
+	journal = {bioRxiv}
+}
+```
 
 [issue tracker]: https://github.com/HCA-integration/scAtlasTb/issues
 [tests]: https://github.com/HCA-integration/scAtlasTb/actions/workflows/test.yaml
